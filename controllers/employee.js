@@ -26,7 +26,29 @@ const get = async (req, res) => {
   }
 };
 
+const update = async (req, res) => {
+  try {
+    await Employee.findByIdAndUpdate(
+      req.body.id,
+      {
+        fullName: req.body.fullName,
+        email: req.body.email,
+        department: req.body.department,
+        role: req.body.role,
+        totalDays: req.body.totalDays,
+        usedDays: req.body.usedDays,
+      },
+      { omitUndefined: true }
+    );
+    res.send("Employee updated...");
+  } catch (error) {
+    res.status(400).send(error.message);
+    console.log(error.message);
+  }
+};
+
 module.exports = {
   add,
   get,
+  update,
 };

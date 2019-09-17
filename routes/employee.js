@@ -8,4 +8,6 @@ router.post("/", employeeController.add);
 
 router.get("/", employeeController.get);
 
+router.put("/", employeeController.update);
+
 module.exports = router;

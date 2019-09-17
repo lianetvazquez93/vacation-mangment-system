@@ -4,10 +4,14 @@ const mongoose = require("mongoose");
 const app = express();
 
 const routes = require("./routes");
-const PORT = process.env.APP_PORT || 5000;
+const PORT = process.env.APP_PORT || 8000;
 
 mongoose
-  .connect(process.env.DB_URL, { useNewUrlParser: true, useCreateIndex: true })
+  .connect(process.env.DB_URL, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+  })
   .catch(error => {
     console.log(error.message);
     process.exit(1);
