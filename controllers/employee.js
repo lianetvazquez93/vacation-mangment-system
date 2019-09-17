@@ -47,8 +47,19 @@ const update = async (req, res) => {
   }
 };
 
+const remove = async (req, res) => {
+  try {
+    await Employee.findByIdAndDelete(req.body.id);
+    res.send("User deleted...");
+  } catch (error) {
+    res.status(400).send(error.message);
+    console.log(error.message);
+  }
+};
+
 module.exports = {
   add,
   get,
   update,
+  remove,
 };

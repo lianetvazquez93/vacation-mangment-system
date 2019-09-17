@@ -10,4 +10,6 @@ router.get("/", employeeController.get);
 
 router.put("/", employeeController.update);
 
+router.delete("/", employeeController.remove);
+
 module.exports = router;
