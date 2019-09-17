@@ -23,7 +23,10 @@ const employeeSchema = mongoose.Schema({
     type: Number,
     default: 20,
   },
-  usedDays: Number,
+  usedDays: {
+    type: Number,
+    default: 0,
+  },
 });
 
 module.exports = mongoose.model("Employee", employeeSchema);
