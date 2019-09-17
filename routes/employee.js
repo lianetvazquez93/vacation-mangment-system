@@ -6,4 +6,6 @@ const router = Router();
 
 router.post("/", employeeController.add);
 
+router.get("/", employeeController.get);
+
 module.exports = router;

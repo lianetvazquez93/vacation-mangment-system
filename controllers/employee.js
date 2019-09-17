@@ -16,6 +16,17 @@ const add = async (req, res) => {
   }
 };
 
+const get = async (req, res) => {
+  try {
+    let employees = await Employee.find();
+    res.send(employees);
+  } catch (error) {
+    req.status(400).send(error.message);
+    console.log(error.message);
+  }
+};
+
 module.exports = {
   add,
+  get,
 };
