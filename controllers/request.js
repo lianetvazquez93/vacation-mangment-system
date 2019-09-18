@@ -6,8 +6,17 @@ const create = async (req, res) => {
       startDate: req.body.startDate,
       endDate: req.body.endDate,
     });
-    newRequest.save();
+    await newRequest.save();
     res.send("Vacations requested...");
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
+const get = async (req, res) => {
+  try {
+    let requests = await Request.find();
+    res.send(requests);
   } catch (error) {
     res.status(400).send(error.message);
   }
@@ -15,4 +24,5 @@ const create = async (req, res) => {
 
 module.exports = {
   create,
+  get,
 };
