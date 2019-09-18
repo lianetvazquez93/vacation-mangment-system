@@ -8,4 +8,8 @@ router.post("/", requestController.create);
 
 router.get("/", requestController.get);
 
+router.put("/status", requestController.updateStatus);
+
+router.put("/dates", requestController.updateDates);
+
 module.exports = router;

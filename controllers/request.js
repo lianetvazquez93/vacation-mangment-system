@@ -22,7 +22,38 @@ const get = async (req, res) => {
   }
 };
 
+const updateStatus = async (req, res) => {
+  try {
+    await Request.findByIdAndUpdate(
+      req.body.id,
+      { status: req.body.status },
+      { omitUndefined: true }
+    );
+    res.send("Status updated...");
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
+const updateDates = async (req, res) => {
+  try {
+    await Request.findByIdAndUpdate(
+      req.body.id,
+      {
+        startDate: req.body.startDate,
+        endDate: req.body.endDate,
+      },
+      { omitUndefined: true }
+    );
+    res.send("Dates updated...");
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
 module.exports = {
   create,
   get,
+  updateStatus,
+  updateDates,
 };
