@@ -12,4 +12,6 @@ router.put("/status", requestController.updateStatus);
 
 router.put("/dates", requestController.updateDates);
 
+router.delete("/:id", requestController.remove);
+
 module.exports = router;

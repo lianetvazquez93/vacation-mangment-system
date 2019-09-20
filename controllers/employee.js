@@ -21,7 +21,7 @@ const get = async (req, res) => {
     let employees = await Employee.find();
     res.send(employees);
   } catch (error) {
-    req.status(400).send(error.message);
+    res.status(400).send(error.message);
     console.log(error.message);
   }
 };
@@ -49,8 +49,8 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    await Employee.findByIdAndDelete(req.body.id);
-    res.send("User deleted...");
+    await Employee.findByIdAndDelete(req.params.id);
+    res.send("Employee deleted...");
   } catch (error) {
     res.status(400).send(error.message);
     console.log(error.message);

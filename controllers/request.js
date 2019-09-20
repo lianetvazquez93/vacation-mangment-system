@@ -51,9 +51,19 @@ const updateDates = async (req, res) => {
   }
 };
 
+const remove = async (req, res) => {
+  try {
+    await Request.findByIdAndDelete(req.params.id);
+    res.send("Vacations request cancelled...");
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
 module.exports = {
   create,
   get,
   updateStatus,
   updateDates,
+  remove,
 };
