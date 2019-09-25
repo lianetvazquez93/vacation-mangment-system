@@ -5,9 +5,10 @@ const create = async (req, res) => {
     let newRequest = new Request({
       startDate: req.body.startDate,
       endDate: req.body.endDate,
+      employee: req.employee.id,
     });
     await newRequest.save();
-    res.send("Vacations requested...");
+    res.status(201).send("Vacations requested...");
   } catch (error) {
     res.status(400).send(error.message);
   }
@@ -15,7 +16,7 @@ const create = async (req, res) => {
 
 const get = async (req, res) => {
   try {
-    let requests = await Request.find();
+    const requests = await Request.find();
     res.send(requests);
   } catch (error) {
     res.status(400).send(error.message);

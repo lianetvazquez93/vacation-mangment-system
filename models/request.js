@@ -17,7 +17,6 @@ const requestSchema = mongoose.Schema({
   employee: {
     type: mongoose.Types.ObjectId,
     ref: "Employee",
-    default: "5d80e64d15e0dc528ecca257",
   },
 });
 

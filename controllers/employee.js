@@ -7,21 +7,12 @@ const add = async (req, res) => {
       email: req.body.email,
       department: req.body.department,
       role: req.body.role,
+      password: req.body.password,
     });
     await newEmployee.save();
     res.status(201).send("Employee created...");
   } catch (error) {
     req.status(400).send(error.message);
-    console.log(error.message);
-  }
-};
-
-const get = async (req, res) => {
-  try {
-    let employees = await Employee.find();
-    res.send(employees);
-  } catch (error) {
-    res.status(400).send(error.message);
     console.log(error.message);
   }
 };
@@ -36,7 +27,6 @@ const update = async (req, res) => {
         department: req.body.department,
         role: req.body.role,
         totalDays: req.body.totalDays,
-        usedDays: req.body.usedDays,
       },
       { omitUndefined: true }
     );
@@ -59,7 +49,6 @@ const remove = async (req, res) => {
 
 module.exports = {
   add,
-  get,
   update,
   remove,
 };

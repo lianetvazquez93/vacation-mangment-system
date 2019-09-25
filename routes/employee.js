@@ -6,8 +6,6 @@ const router = Router();
 
 router.post("/", employeeController.add);
 
-router.get("/", employeeController.get);
-
 router.put("/", employeeController.update);
 
 router.delete("/:id", employeeController.remove);
