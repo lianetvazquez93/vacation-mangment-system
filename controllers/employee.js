@@ -20,6 +20,20 @@ const add = async (req, res) => {
   }
 };
 
+const getAll = async (req, res) => {
+  try {
+    if (req.employee.role !== "admin") {
+      res.status(401);
+      throw new Error("No authorization");
+    }
+
+    const employees = await Employee.find();
+    res.send(employees);
+  } catch (error) {
+    res.send(error.message);
+  }
+};
+
 const update = async (req, res) => {
   try {
     await Employee.findByIdAndUpdate(
@@ -42,16 +56,28 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
+    if (req.employee.role !== "admin") {
+      res.status(401);
+      throw new Error("No authorization");
+    }
+
+    const employeeToDelete = await Employee.findById(req.params.id);
+
+    if (!employeeToDelete) {
+      res.status(404);
+      throw new Error("Employee does not exist");
+    }
+
     await Employee.findByIdAndDelete(req.params.id);
     res.send("Employee deleted...");
   } catch (error) {
-    res.status(400).send(error.message);
-    console.log(error.message);
+    res.send(error.message);
   }
 };
 
 module.exports = {
   add,
+  getAll,
   update,
   remove,
 };
