@@ -36,4 +36,13 @@ employeeSchema.pre("save", function(next) {
   next();
 });
 
+employeeSchema.post("findOneAndDelete", { document: true }, function() {
+  const id = this.getQuery()["_id"];
+  mongoose.model("Request").deleteMany({ employee: id }, function(err) {
+    if (err) {
+      throw err;
+    }
+  });
+});
+
 module.exports = mongoose.model("Employee", employeeSchema);
