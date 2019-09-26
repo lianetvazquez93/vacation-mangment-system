@@ -36,6 +36,28 @@ const getAll = async (req, res) => {
 
 const update = async (req, res) => {
   try {
+    if (req.employee.role !== "admin") {
+      res.status(401);
+      throw new Error("No Authorization");
+    }
+
+    if (!req.body.id) {
+      res.status(400);
+      throw new Error("Missing employee's id");
+    }
+
+    const employeeToUpdate = await Employee.findById(req.body.id);
+
+    if (!employeeToUpdate) {
+      res.status(404);
+      throw new Error("Employee does not exist");
+    }
+
+    if (req.body.password) {
+      employeeToUpdate.password = req.body.password;
+      employeeToUpdate.save();
+    }
+
     await Employee.findByIdAndUpdate(
       req.body.id,
       {
@@ -47,10 +69,10 @@ const update = async (req, res) => {
       },
       { omitUndefined: true }
     );
+
     res.send("Employee updated...");
   } catch (error) {
-    res.status(400).send(error.message);
-    console.log(error.message);
+    res.send(error.message);
   }
 };
 
