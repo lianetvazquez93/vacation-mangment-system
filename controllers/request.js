@@ -16,7 +16,7 @@ const create = async (req, res) => {
 
 const get = async (req, res) => {
   try {
-    const requests = await Request.find();
+    const requests = await Request.find({ employee: req.employee.id });
     res.send(requests);
   } catch (error) {
     res.status(400).send(error.message);
