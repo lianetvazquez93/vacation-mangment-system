@@ -25,6 +25,11 @@ const get = async (req, res) => {
 
 const updateStatus = async (req, res) => {
   try {
+    if (req.employee.role !== "admin") {
+      res.status(401);
+      throw new Error("No authorization");
+    }
+
     await Request.findByIdAndUpdate(
       req.body.id,
       { status: req.body.status },
@@ -32,7 +37,7 @@ const updateStatus = async (req, res) => {
     );
     res.send("Status updated...");
   } catch (error) {
-    res.status(400).send(error.message);
+    res.send(error.message);
   }
 };
 

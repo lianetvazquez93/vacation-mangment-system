@@ -9,7 +9,7 @@ router.post("/", isAuthenticated, requestController.create);
 
 router.get("/", isAuthenticated, requestController.get);
 
-router.put("/status", requestController.updateStatus);
+router.put("/status", isAuthenticated, requestController.updateStatus);
 
 router.put("/dates", requestController.updateDates);
 

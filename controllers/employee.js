@@ -2,6 +2,10 @@ const Employee = require("../models/employee");
 
 const add = async (req, res) => {
   try {
+    if (req.employee.role !== "admin") {
+      res.status(401);
+      throw new Error("Not authorization");
+    }
     let newEmployee = new Employee({
       fullName: req.body.fullName,
       email: req.body.email,
@@ -12,8 +16,7 @@ const add = async (req, res) => {
     await newEmployee.save();
     res.status(201).send("Employee created...");
   } catch (error) {
-    req.status(400).send(error.message);
-    console.log(error.message);
+    res.send(error.message);
   }
 };
 

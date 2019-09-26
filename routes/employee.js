@@ -1,10 +1,11 @@
 const { Router } = require("express");
 
 const employeeController = require("../controllers/employee");
+const { isAuthenticated } = require("../middleware");
 
 const router = Router();
 
-router.post("/", employeeController.add);
+router.post("/", isAuthenticated, employeeController.add);
 
 router.put("/", employeeController.update);
 
