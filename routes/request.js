@@ -7,7 +7,7 @@ const router = Router();
 
 router.post("/", isAuthenticated, requestController.create);
 
-router.get("/", isAuthenticated, requestController.get);
+router.get("/", requestController.get);
 
 router.put("/status", isAuthenticated, requestController.updateStatus);
 

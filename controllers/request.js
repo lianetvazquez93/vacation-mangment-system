@@ -2,21 +2,30 @@ const Request = require("../models/request");
 
 const create = async (req, res) => {
   try {
-    let newRequest = new Request({
-      startDate: req.body.startDate,
-      endDate: req.body.endDate,
+    const { startDate, endDate } = req.body;
+    const newRequest = new Request({
+      startDate: startDate,
+      endDate: endDate,
       employee: req.employee.id,
     });
     await newRequest.save();
     res.status(201).send("Vacations requested...");
   } catch (error) {
-    res.status(400).send(error.message);
+    res.send(error.message);
   }
 };
 
 const get = async (req, res) => {
   try {
-    const requests = await Request.find({ employee: req.employee.id });
+    const { id } = req.query;
+    let requests = [];
+
+    if (id) {
+      requests = await Request.find({ employee: id });
+    } else {
+      requests = await Request.find();
+    }
+
     res.send(requests);
   } catch (error) {
     res.status(400).send(error.message);
