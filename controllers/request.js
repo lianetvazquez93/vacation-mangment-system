@@ -43,6 +43,13 @@ const updateStatus = async (req, res) => {
 
 const updateDates = async (req, res) => {
   try {
+    const requestToUpdate = await Request.findById(req.body.id);
+
+    if (!requestToUpdate || requestToUpdate.employee != req.employee.id) {
+      res.status(404);
+      throw new Error("Request does not exist");
+    }
+
     await Request.findByIdAndUpdate(
       req.body.id,
       {
@@ -53,16 +60,23 @@ const updateDates = async (req, res) => {
     );
     res.send("Dates updated...");
   } catch (error) {
-    res.status(400).send(error.message);
+    res.send(error.message);
   }
 };
 
 const remove = async (req, res) => {
   try {
+    const requestToDelete = await Request.findById(req.params.id);
+
+    if (!requestToDelete || requestToDelete.employee != req.employee.id) {
+      res.status(404);
+      throw new Error("Request does not exist");
+    }
+
     await Request.findByIdAndDelete(req.params.id);
     res.send("Vacations request cancelled...");
   } catch (error) {
-    res.status(400).send(error.message);
+    res.send(error.message);
   }
 };
 

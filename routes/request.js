@@ -11,8 +11,8 @@ router.get("/", isAuthenticated, requestController.get);
 
 router.put("/status", isAuthenticated, requestController.updateStatus);
 
-router.put("/dates", requestController.updateDates);
+router.put("/dates", isAuthenticated, requestController.updateDates);
 
-router.delete("/:id", requestController.remove);
+router.delete("/:id", isAuthenticated, requestController.remove);
 
 module.exports = router;
