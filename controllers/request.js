@@ -18,13 +18,8 @@ const create = async (req, res) => {
 const get = async (req, res) => {
   try {
     const { id } = req.query;
-    let requests = [];
 
-    if (id) {
-      requests = await Request.find({ employee: id });
-    } else {
-      requests = await Request.find();
-    }
+    let requests = id ? await Request.find({ employee: id }) : await Request.find();
 
     res.send(requests);
   } catch (error) {
