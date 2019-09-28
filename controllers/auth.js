@@ -33,6 +33,24 @@ const login = async (req, res) => {
   }
 };
 
+const profile = async (req, res) => {
+  try {
+    const { fullName, email, department, totalDays } = await Employee.findById(req.employee.id);
+
+    if (!email) {
+      res.status(404);
+      throw new Error("Employee does mot exist");
+    }
+
+    res.send(
+      ` Name: ${fullName},\n Email: ${email},\n Department: ${department},\n Vacation Days: ${totalDays}`
+    );
+  } catch (error) {
+    res.send(error.message);
+  }
+};
+
 module.exports = {
   login,
+  profile,
 };
