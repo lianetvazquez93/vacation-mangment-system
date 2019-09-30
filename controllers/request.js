@@ -49,7 +49,7 @@ const updateDates = async (req, res) => {
   try {
     const requestToUpdate = await Request.findById(req.body.id);
 
-    if (!requestToUpdate || requestToUpdate.employee != req.employee.id) {
+    if (!requestToUpdate || requestToUpdate.employee.toString() !== req.employee.id) {
       res.status(404);
       throw new Error("Request does not exist");
     }
@@ -72,7 +72,7 @@ const remove = async (req, res) => {
   try {
     const requestToDelete = await Request.findById(req.params.id);
 
-    if (!requestToDelete || requestToDelete.employee != req.employee.id) {
+    if (!requestToDelete || requestToDelete.employee.toString() !== req.employee.id) {
       res.status(404);
       throw new Error("Request does not exist");
     }
