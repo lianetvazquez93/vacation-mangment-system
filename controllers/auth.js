@@ -42,9 +42,12 @@ const profile = async (req, res) => {
       throw new Error("Employee does mot exist");
     }
 
-    res.send(
-      ` Name: ${fullName},\n Email: ${email},\n Department: ${department},\n Vacation Days: ${totalDays}`
-    );
+    res.json({
+      Name: fullName,
+      Email: email,
+      Department: department,
+      Total: totalDays,
+    });
   } catch (error) {
     res.send(error.message);
   }
