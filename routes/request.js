@@ -1,7 +1,7 @@
 const { Router } = require("express");
 
 const requestController = require("../controllers/request");
-const { isAuthenticated } = require("../middleware");
+const { isAuthenticated } = require("../lib/middleware");
 
 const router = Router();
 

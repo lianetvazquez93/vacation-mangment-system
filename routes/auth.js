@@ -1,7 +1,7 @@
 const { Router } = require("express");
 
 const authController = require("../controllers/auth");
-const { isAuthenticated } = require("../middleware");
+const { isAuthenticated } = require("../lib/middleware");
 const router = Router();
 
 router.post("/login", authController.login);

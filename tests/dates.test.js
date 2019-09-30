@@ -1,4 +1,4 @@
-const dates = require("../lib/dates");
+const dates = require("../lib/utils/dates");
 
 describe("dates", () => {
   describe("total days", () => {
