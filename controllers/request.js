@@ -1,8 +1,14 @@
 const Request = require("../models/request");
+const { BadRequestError, ResourceNotFoundError, ForbiddenError } = require("../lib/errors");
 
 const create = async (req, res) => {
   try {
     const { startDate, endDate } = req.body;
+
+    if (!startDate || !endDate) {
+      throw new BadRequestError();
+    }
+
     const newRequest = new Request({
       startDate: startDate,
       endDate: endDate,
@@ -11,7 +17,7 @@ const create = async (req, res) => {
     await newRequest.save();
     res.status(201).send("Vacations requested...");
   } catch (error) {
-    res.send(error.message);
+    res.status(error.statusCode).send(error.message);
   }
 };
 
@@ -30,8 +36,11 @@ const get = async (req, res) => {
 const updateStatus = async (req, res) => {
   try {
     if (req.employee.role !== "admin") {
-      res.status(401);
-      throw new Error("No authorization");
+      throw new ForbiddenError();
+    }
+
+    if (!req.body.id) {
+      throw new BadRequestError();
     }
 
     await Request.findByIdAndUpdate(
@@ -41,7 +50,7 @@ const updateStatus = async (req, res) => {
     );
     res.send("Status updated...");
   } catch (error) {
-    res.send(error.message);
+    res.status(error.statusCode).send(error.message);
   }
 };
 
@@ -49,9 +58,12 @@ const updateDates = async (req, res) => {
   try {
     const requestToUpdate = await Request.findById(req.body.id);
 
+    if (!req.body.id) {
+      throw new BadRequestError();
+    }
+
     if (!requestToUpdate || requestToUpdate.employee.toString() !== req.employee.id) {
-      res.status(404);
-      throw new Error("Request does not exist");
+      throw new ResourceNotFoundError();
     }
 
     await Request.findByIdAndUpdate(
@@ -64,7 +76,7 @@ const updateDates = async (req, res) => {
     );
     res.send("Dates updated...");
   } catch (error) {
-    res.send(error.message);
+    res.status(error.statusCode).send(error.message);
   }
 };
 
@@ -73,14 +85,13 @@ const remove = async (req, res) => {
     const requestToDelete = await Request.findById(req.params.id);
 
     if (!requestToDelete || requestToDelete.employee.toString() !== req.employee.id) {
-      res.status(404);
-      throw new Error("Request does not exist");
+      throw new ResourceNotFoundError();
     }
 
     await Request.findByIdAndDelete(req.params.id);
     res.send("Vacations request cancelled...");
   } catch (error) {
-    res.send(error.message);
+    res.status(error.statusCode).send(error.message);
   }
 };
 
