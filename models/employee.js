@@ -25,6 +25,10 @@ const employeeSchema = mongoose.Schema({
     type: Number,
     default: 20,
   },
+  availableDays: {
+    type: Number,
+    default: 20,
+  },
   password: {
     type: String,
     required: true,
