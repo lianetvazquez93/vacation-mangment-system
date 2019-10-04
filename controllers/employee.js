@@ -49,9 +49,14 @@ const update = async (req, res) => {
       throw new ResourceNotFoundError();
     }
 
+    if (req.body.totalDays) {
+      employeeToUpdate.availableDays += req.body.totalDays - employeeToUpdate.totalDays;
+      await employeeToUpdate.save();
+    }
+
     if (req.body.password) {
       employeeToUpdate.password = req.body.password;
-      employeeToUpdate.save();
+      await employeeToUpdate.save();
     }
 
     await Employee.findByIdAndUpdate(
