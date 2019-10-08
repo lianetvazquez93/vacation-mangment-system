@@ -50,8 +50,14 @@ const update = async (req, res) => {
     }
 
     if (req.body.totalDays) {
-      employeeToUpdate.availableDays += req.body.totalDays - employeeToUpdate.totalDays;
-      await employeeToUpdate.save();
+      //total is for totalDays before update
+      const available = employeeToUpdate.availableDays;
+      const total = employeeToUpdate.totalDays;
+      await Employee.findByIdAndUpdate(
+        req.body.id,
+        { availableDays: available + req.body.totalDays - total },
+        { omitUndefined: true }
+      );
     }
 
     if (req.body.password) {

@@ -39,15 +39,18 @@ const updateStatus = async (req, res) => {
       throw new ForbiddenError();
     }
 
-    if (!req.body.id) {
+    if (!req.body.id || !req.body.status) {
       throw new BadRequestError();
     }
 
-    await Request.findByIdAndUpdate(
-      req.body.id,
-      { status: req.body.status },
-      { omitUndefined: true }
-    );
+    const requestToUpdate = await Request.findById(req.body.id);
+
+    if (!requestToUpdate) {
+      throw new ResourceNotFoundError();
+    }
+
+    requestToUpdate.status = req.body.status;
+    await requestToUpdate.save();
     res.send("Status updated...");
   } catch (error) {
     res.status(error.statusCode).send(error.message);

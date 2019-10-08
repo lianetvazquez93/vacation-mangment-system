@@ -34,4 +34,18 @@ requestSchema.pre("save", async function(next) {
   }
 });
 
+requestSchema.post("save", async function(next) {
+  try {
+    if (this.status === "accepted") {
+      const employee = await mongoose.model("Employee").findById(this.employee);
+      const avDays = employee.availableDays - businessDays(this.startDate, this.endDate);
+      await mongoose
+        .model("Employee")
+        .findByIdAndUpdate(this.employee, { availableDays: avDays }, { omitUndefined: true });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = mongoose.model("Request", requestSchema);
