@@ -48,6 +48,25 @@ requestSchema.post("save", async function(next) {
   }
 });
 
+requestSchema.pre("findOneAndUpdate", async function(next) {
+  try {
+    const id = this.getQuery()["_id"];
+    const requestToUpdate = await mongoose.model("Request").findById(id);
+    const employee = await mongoose.model("Employee").findById(requestToUpdate.employee);
+    const avDays =
+      employee.availableDays + businessDays(requestToUpdate.startDate, requestToUpdate.endDate);
+    await mongoose
+      .model("Employee")
+      .findByIdAndUpdate(
+        requestToUpdate.employee,
+        { availableDays: avDays },
+        { omitUndefined: true }
+      );
+  } catch (error) {
+    next(error);
+  }
+});
+
 requestSchema.pre("findOneAndDelete", async function(next) {
   try {
     const id = this.getQuery()["_id"];
