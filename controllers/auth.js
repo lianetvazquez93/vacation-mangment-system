@@ -8,14 +8,15 @@ const { ResourceNotFoundError, MissingCredentialsError } = require("../lib/error
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      throw new MissingCredentialsError();
+    }
+
     const employee = await Employee.findOne({ email });
 
     if (!employee) {
       throw new ResourceNotFoundError();
-    }
-
-    if (!password) {
-      throw new MissingCredentialsError();
     }
 
     const match = await bcrypt.compare(password, employee.password);
@@ -28,24 +29,20 @@ const login = async (req, res) => {
 
     res.send({ token });
   } catch (error) {
-    res.status(error.statusCode).send(error.message);
+    console.log(error);
+    res.status(400).send(error.message);
   }
 };
 
 const profile = async (req, res) => {
   try {
-    const { fullName, email, department, totalDays } = await Employee.findById(req.employee.id);
+    const employee = await Employee.findById(req.employee.id).select("-password");
 
-    if (!email) {
+    if (!employee) {
       throw new ResourceNotFoundError();
     }
 
-    res.json({
-      Name: fullName,
-      Email: email,
-      Department: department,
-      Total: totalDays,
-    });
+    res.json(employee);
   } catch (error) {
     res.status(error.statusCode).send(error.message);
   }

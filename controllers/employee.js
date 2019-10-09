@@ -14,7 +14,7 @@ const add = async (req, res) => {
       password: req.body.password,
     });
     await newEmployee.save();
-    res.status(201).json(newEmployee);
+    res.status(201).json(await Employee.findById(newEmployee.id).select("-password"));
   } catch (error) {
     res.status(error.statusCode).send(error.message);
   }
@@ -26,7 +26,7 @@ const getAll = async (req, res) => {
       throw new ForbiddenError();
     }
 
-    const employees = await Employee.find();
+    const employees = await Employee.find().select("-password");
     res.send(employees);
   } catch (error) {
     res.status(error.statusCode).send(error.message);
@@ -73,7 +73,7 @@ const update = async (req, res) => {
       { omitUndefined: true }
     );
 
-    res.json(await Employee.findById(id));
+    res.json(await Employee.findById(id).select("-password"));
   } catch (error) {
     res.status(error.statusCode).send(error.message);
   }
@@ -93,7 +93,7 @@ const remove = async (req, res) => {
     }
 
     await Employee.findByIdAndDelete(id);
-    res.send(await Employee.find());
+    res.send(await Employee.find().select("-password"));
   } catch (error) {
     res.status(error.statusCode).send(error.message);
   }
