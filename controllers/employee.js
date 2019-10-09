@@ -1,5 +1,5 @@
 const Employee = require("../models/employee");
-const { ForbiddenError, BadRequestError, ResourceNotFoundError } = require("../lib/errors");
+const { ForbiddenError, ResourceNotFoundError } = require("../lib/errors");
 
 const add = async (req, res) => {
   try {
@@ -14,7 +14,7 @@ const add = async (req, res) => {
       password: req.body.password,
     });
     await newEmployee.save();
-    res.status(201).send("Employee created...");
+    res.status(201).json(newEmployee);
   } catch (error) {
     res.status(error.statusCode).send(error.message);
   }
@@ -39,22 +39,18 @@ const update = async (req, res) => {
       throw new ForbiddenError();
     }
 
-    if (!req.body.id) {
-      throw new BadRequestError();
-    }
-
-    const employeeToUpdate = await Employee.findById(req.body.id);
+    const id = req.params.id;
+    const employeeToUpdate = await Employee.findById(id);
 
     if (!employeeToUpdate) {
       throw new ResourceNotFoundError();
     }
 
     if (req.body.totalDays) {
-      //total is for totalDays before update
       const available = employeeToUpdate.availableDays;
       const total = employeeToUpdate.totalDays;
       await Employee.findByIdAndUpdate(
-        req.body.id,
+        id,
         { availableDays: available + req.body.totalDays - total },
         { omitUndefined: true }
       );
@@ -66,7 +62,7 @@ const update = async (req, res) => {
     }
 
     await Employee.findByIdAndUpdate(
-      req.body.id,
+      id,
       {
         fullName: req.body.fullName,
         email: req.body.email,
@@ -77,7 +73,7 @@ const update = async (req, res) => {
       { omitUndefined: true }
     );
 
-    res.send("Employee updated...");
+    res.json(await Employee.findById(id));
   } catch (error) {
     res.status(error.statusCode).send(error.message);
   }
@@ -89,14 +85,15 @@ const remove = async (req, res) => {
       throw new ForbiddenError();
     }
 
-    const employeeToDelete = await Employee.findById(req.params.id);
+    const id = req.params.id;
+    const employeeToDelete = await Employee.findById(id);
 
     if (!employeeToDelete) {
       throw new ResourceNotFoundError();
     }
 
-    await Employee.findByIdAndDelete(req.params.id);
-    res.send("Employee deleted...");
+    await Employee.findByIdAndDelete(id);
+    res.send(await Employee.find());
   } catch (error) {
     res.status(error.statusCode).send(error.message);
   }

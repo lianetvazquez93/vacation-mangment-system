@@ -9,7 +9,7 @@ router.post("/", isAuthenticated, employeeController.add);
 
 router.get("/", isAuthenticated, employeeController.getAll);
 
-router.put("/", isAuthenticated, employeeController.update);
+router.put("/:id", isAuthenticated, employeeController.update);
 
 router.delete("/:id", isAuthenticated, employeeController.remove);
 

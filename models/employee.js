@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
+const { BadRequestError } = require("../lib/errors");
+
 const employeeSchema = mongoose.Schema({
   fullName: {
     type: String,
@@ -32,7 +34,6 @@ const employeeSchema = mongoose.Schema({
   password: {
     type: String,
     required: true,
-    select: false,
   },
 });
 
@@ -41,13 +42,13 @@ employeeSchema.pre("save", function(next) {
   next();
 });
 
-employeeSchema.post("findOneAndDelete", { document: true }, function() {
-  const id = this.getQuery()["_id"];
-  mongoose.model("Request").deleteMany({ employee: id }, function(err) {
-    if (err) {
-      throw err;
-    }
-  });
+employeeSchema.post("findOneAndDelete", async function(next) {
+  try {
+    const id = this.getQuery()["_id"];
+    await mongoose.model("Request").deleteMany({ employee: id });
+  } catch (error) {
+    next(new BadRequestError());
+  }
 });
 
 module.exports = mongoose.model("Employee", employeeSchema);
