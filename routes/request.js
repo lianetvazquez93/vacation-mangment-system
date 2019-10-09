@@ -9,9 +9,9 @@ router.post("/", isAuthenticated, requestController.create);
 
 router.get("/", requestController.get);
 
-router.put("/status", isAuthenticated, requestController.updateStatus);
+router.put("/status/:id", isAuthenticated, requestController.updateStatus);
 
-router.put("/dates", isAuthenticated, requestController.updateDates);
+router.put("/dates/:id", isAuthenticated, requestController.updateDates);
 
 router.delete("/:id", isAuthenticated, requestController.remove);
 

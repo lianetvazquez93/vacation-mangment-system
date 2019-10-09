@@ -30,7 +30,7 @@ requestSchema.pre("save", async function(next) {
       throw new BadRequestError("Not enough available days");
     }
   } catch (error) {
-    next(error);
+    next(new BadRequestError());
   }
 });
 
@@ -44,7 +44,7 @@ requestSchema.post("save", async function(next) {
         .findByIdAndUpdate(this.employee, { availableDays: avDays }, { omitUndefined: true });
     }
   } catch (error) {
-    next(error);
+    next(new BadRequestError());
   }
 });
 
@@ -63,7 +63,7 @@ requestSchema.pre("findOneAndUpdate", async function(next) {
         { omitUndefined: true }
       );
   } catch (error) {
-    next(error);
+    next(new BadRequestError());
   }
 });
 
@@ -85,7 +85,7 @@ requestSchema.pre("findOneAndDelete", async function(next) {
         );
     }
   } catch (error) {
-    next(error);
+    next(new BadRequestError());
   }
 });
 

@@ -10,12 +10,12 @@ const create = async (req, res) => {
     }
 
     const newRequest = new Request({
-      startDate: startDate,
-      endDate: endDate,
+      startDate,
+      endDate,
       employee: req.employee.id,
     });
     await newRequest.save();
-    res.status(201).send("Vacations requested...");
+    res.status(201).json(newRequest);
   } catch (error) {
     res.status(error.statusCode).send(error.message);
   }
@@ -35,23 +35,26 @@ const get = async (req, res) => {
 
 const updateStatus = async (req, res) => {
   try {
+    const status = req.body.status;
+    const id = req.params.id;
+
     if (req.employee.role !== "admin") {
       throw new ForbiddenError();
     }
 
-    if (!req.body.id || !req.body.status) {
+    if (!status) {
       throw new BadRequestError();
     }
 
-    const requestToUpdate = await Request.findById(req.body.id);
+    const requestToUpdate = await Request.findById(id);
 
     if (!requestToUpdate) {
       throw new ResourceNotFoundError();
     }
 
-    requestToUpdate.status = req.body.status;
+    requestToUpdate.status = status;
     await requestToUpdate.save();
-    res.send("Status updated...");
+    res.json(requestToUpdate);
   } catch (error) {
     res.status(error.statusCode).send(error.message);
   }
@@ -59,11 +62,14 @@ const updateStatus = async (req, res) => {
 
 const updateDates = async (req, res) => {
   try {
-    if (!req.body.id || (!req.body.startDate && !req.body.endDate)) {
+    const { startDate, endDate } = req.body;
+    const id = req.params.id;
+
+    if (!startDate && !endDate) {
       throw new BadRequestError();
     }
 
-    const requestToUpdate = await Request.findById(req.body.id);
+    const requestToUpdate = await Request.findById(id);
 
     if (!requestToUpdate) {
       throw new ResourceNotFoundError();
@@ -73,11 +79,11 @@ const updateDates = async (req, res) => {
       if (requestToUpdate.employee.toString() !== req.employee.id) {
         throw new ForbiddenError();
       }
-      if (req.body.startDate) {
-        requestToUpdate.startDate = req.body.startDate;
+      if (startDate) {
+        requestToUpdate.startDate = startDate;
       }
-      if (req.body.endDate) {
-        requestToUpdate.endDate = req.body.endDate;
+      if (endDate) {
+        requestToUpdate.endDate = endDate;
       }
       if (requestToUpdate.status === "denied") {
         requestToUpdate.status = "requested";
@@ -89,18 +95,18 @@ const updateDates = async (req, res) => {
       }
 
       await Request.findByIdAndUpdate(
-        req.body.id,
+        id,
         {
-          startDate: req.body.startDate,
-          endDate: req.body.endDate,
+          startDate,
+          endDate,
         },
         { omitUndefined: true }
       );
-      const request = await Request.findById(req.body.id);
+      const request = await Request.findById(id);
       await request.save();
     }
 
-    res.send("Dates updated...");
+    res.json(await Request.findById(id));
   } catch (error) {
     res.status(error.statusCode).send(error.message);
   }
@@ -108,14 +114,15 @@ const updateDates = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    const requestToDelete = await Request.findById(req.params.id);
+    const id = req.params.id;
+    const requestToDelete = await Request.findById(id);
 
     if (!requestToDelete || requestToDelete.employee.toString() !== req.employee.id) {
       throw new ResourceNotFoundError();
     }
 
-    await Request.findByIdAndDelete(req.params.id);
-    res.send("Vacations request cancelled...");
+    await Request.findByIdAndDelete(id);
+    res.send(await Request.find({ employee: req.employee.id }));
   } catch (error) {
     res.status(error.statusCode).send(error.message);
   }
