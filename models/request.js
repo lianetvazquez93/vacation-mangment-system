@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const { businessDays } = require("../lib/utils/dates");
+const email = require("../lib/utils/email");
 const { BadRequestError } = require("../lib/errors");
 
 const requestSchema = mongoose.Schema({
@@ -42,6 +43,17 @@ requestSchema.post("save", async function(next) {
       await mongoose
         .model("Employee")
         .findByIdAndUpdate(this.employee, { availableDays: avDays }, { omitUndefined: true });
+    }
+
+    if (this.status !== "requested") {
+      const employee = await mongoose.model("Employee").findById(this.employee);
+      const to = employee.email;
+      const text = `Your vacation request from ${this.startDate} to ${this.endDate} has been ${this.status}. You have left ${employee.availableDays} available vacation days.`;
+      email.send({
+        from: "info@vacations.lgo",
+        to,
+        text,
+      });
     }
   } catch (error) {
     next(new BadRequestError());

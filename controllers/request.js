@@ -54,7 +54,7 @@ const updateStatus = async (req, res) => {
 
     requestToUpdate.status = status;
     await requestToUpdate.save();
-    res.json(requestToUpdate);
+    res.json(await Request.findById(id));
   } catch (error) {
     res.status(error.statusCode).send(error.message);
   }
